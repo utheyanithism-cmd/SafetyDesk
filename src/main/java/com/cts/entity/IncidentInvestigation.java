@@ -2,7 +2,10 @@ package com.cts.entity;
 import lombok.Data;
 import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
+
 @Data
+@Entity
 public class IncidentInvestigation {
 	
 		public enum StatusCategory{

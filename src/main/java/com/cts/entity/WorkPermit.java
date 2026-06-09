@@ -3,7 +3,10 @@ package com.cts.entity;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+
 @Data
+@Entity
 public class WorkPermit {
 
     public enum PermitType {

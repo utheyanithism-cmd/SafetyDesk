@@ -2,12 +2,13 @@ package com.cts.entity;
 import lombok.Data;
 
 import java.time.LocalDate;
-
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 
 @Data
+@Entity
 public class RiskAssessment {
 	public enum StatusCategory{
 		Draft,

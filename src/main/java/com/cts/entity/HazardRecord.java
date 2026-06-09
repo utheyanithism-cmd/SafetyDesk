@@ -1,9 +1,11 @@
 package com.cts.entity;
 import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Data
+@Entity
 public class HazardRecord {
 	public enum HazardTypeCategory{
 		Physical,

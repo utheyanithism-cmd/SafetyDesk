@@ -1,9 +1,11 @@
 package com.cts.entity;
 import org.springframework.cglib.core.Local;
 
+import jakarta.persistence.Entity;
 import lombok.Data;
 
 @Data
+@Entity
 public class IncidentReport {
 	
 	public enum IncidentTypeCategory {
