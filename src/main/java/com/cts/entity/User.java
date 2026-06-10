@@ -9,38 +9,38 @@ import lombok.Data;
 public class User {
 
     public enum RoleCategory {
-        Employee,
-        SafetyOfficer,
-        PTWCoordinator,
-        OHNurse,
-        EHSManager,
-        ComplianceOfficer,
-        Admin
+        Employee, SafetyOfficer, PTWCoordinator,
+        OHNurse, EHSManager, ComplianceOfficer, Admin
     }
 
     public enum StatusCategory {
-        Active,
-        Inactive,
-        Transferred
+        Active, Inactive, Transferred
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
+    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoleCategory role;
 
+    @Column(unique = true, nullable = false)  // enforces unique email
     private String email;
-    private String phone;      // fix 1: String not int
 
+    private String phone;
+
+    @Column(nullable = false)
     private int siteID;
+
+    @Column(nullable = false)
     private int departmentID;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;  // fix 2: was missing
+    private StatusCategory status;
 
-    private String password;   // needed for Login API
+    private String password;
 }
