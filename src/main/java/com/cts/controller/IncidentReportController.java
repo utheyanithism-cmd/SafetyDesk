@@ -22,4 +22,42 @@ import com.cts.service.IncidentReportService;
 @RequestMapping("/api/incidents")
 public class IncidentReportController {
 
+	@Autowired
+	private IncidentReportService incidentReportService;
+
+	// CREATE -> POST /api/incidents
+	@PostMapping
+	public ResponseEntity<IncidentReportResponse> createIncident(@RequestBody IncidentReportRequest request) {
+		IncidentReportResponse created = incidentReportService.createIncident(request);
+		return new ResponseEntity<>(created, HttpStatus.CREATED);
+	}
+
+	// READ ALL -> GET /api/incidents
+	@GetMapping
+	public ResponseEntity<List<IncidentReportResponse>> getAllIncidents() {
+		List<IncidentReportResponse> incidents = incidentReportService.getAllIncidents();
+		return ResponseEntity.ok(incidents);
+	}
+
+	// READ ONE -> GET /api/incidents/{id}
+	@GetMapping("/{id}")
+	public ResponseEntity<IncidentReportResponse> getIncidentById(@PathVariable int id) {
+		IncidentReportResponse incident = incidentReportService.getIncidentById(id);
+		return ResponseEntity.ok(incident);
+	}
+
+	// UPDATE -> PUT /api/incidents/{id}
+	@PutMapping("/{id}")
+	public ResponseEntity<IncidentReportResponse> updateIncident(@PathVariable int id,
+			@RequestBody IncidentReportRequest request) {
+		IncidentReportResponse updated = incidentReportService.updateIncident(id, request);
+		return ResponseEntity.ok(updated);
+	}
+
+	// DELETE -> DELETE /api/incidents/{id}
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteIncident(@PathVariable int id) {
+		incidentReportService.deleteIncident(id);
+		return ResponseEntity.noContent().build();
+	}
 }
