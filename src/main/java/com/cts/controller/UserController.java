@@ -18,32 +18,32 @@ public class UserController {
 
     private final UserService userService;
 
-    // POST URL = /api/users/register 
+    // POST TYPE URL = /api/users/register 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO request) {
         return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
     }
 
-    // GET URL = /api/users 
+    // GET TYPE URL = /api/users 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // GET URL = /api/users/{id}
+    // GET TYPE URL = /api/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable int id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    // PUT URL = /api/users/{id}
+    // PUT TYPE URL = /api/users/{id}
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable int id,
             @Valid @RequestBody UserRequestDTO request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
 
-    // DELETE URL = /api/users/{id} → 204 No Content (soft delete)
+    // DELETE TYPE URL = /api/users/{id} → 204 No Content (soft delete)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deactivateUser(@PathVariable int id) {
         userService.deactivateUser(id);
