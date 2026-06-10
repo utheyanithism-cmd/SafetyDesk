@@ -1,17 +1,17 @@
 package com.cts.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 @Data
-@Entity
+@Embeddable
 public class Metrics {
 
-    private int totalIncidents;
-    private double ltifr; // Lost Time Injury Frequency Rate
-    private int nearMissCount;
-    private double inspectionCompletionRate;
-    private double correctiveActionClosureRate;
-    private double permitComplianceRate;
-    private int regulatoryObligationsOverdue;
+	private int totalIncidents;
+	private double ltifr; // Lost Time Injury Frequency Rate
+	private int nearMissCount;
+	private double inspectionCompletionRate;
+	private double correctiveActionClosureRate;
+	private double permitComplianceRate;
+	private int regulatoryObligationsOverdue;
 }

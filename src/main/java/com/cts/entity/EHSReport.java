@@ -1,22 +1,35 @@
 package com.cts.entity;
 
-import lombok.Data;
 import java.time.LocalDate;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
 
 @Data
 @Entity
 public class EHSReport {
 
-    public enum ScopeCategory {
-        Site,
-        Department,
-        Period
-    }
+	public enum ScopeCategory {
+		Site,
+		Department,
+		Period
+	}
 
-    private int reportID;
-    private ScopeCategory scope;
-    private Metrics metrics;
-    private LocalDate generatedDate;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int reportID;
+
+	@Enumerated(EnumType.STRING)
+	private ScopeCategory scope;
+
+	@Embedded
+	private Metrics metrics;
+
+	private LocalDate generatedDate;
 }
