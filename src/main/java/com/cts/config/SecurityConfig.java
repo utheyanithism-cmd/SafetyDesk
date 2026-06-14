@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -30,7 +28,8 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
 
-    // ✅ STEP 1 — Load user + role from YOUR database
+    // ✅ BEAN 1 — Loads user + role from YOUR database
+    // Spring Boot auto-detects this and uses it for authentication
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
@@ -43,62 +42,56 @@ public class SecurityConfig {
                 .password(user.getPassword())
                 .authorities(new SimpleGrantedAuthority(
                     "ROLE_" + user.getRole().name()))
-                .accountLocked(user.getStatus() ==
-                    User.StatusCategory.Inactive)
-                .disabled(user.getStatus() ==
-                    User.StatusCategory.Inactive)
+                .accountLocked(
+                    user.getStatus() == User.StatusCategory.Inactive)
+                .disabled(
+                    user.getStatus() == User.StatusCategory.Inactive)
                 .build();
         };
     }
 
-    // ✅ STEP 2 — Wire DB loader + BCrypt together
+    // ✅ BEAN 2 — BCrypt password encoder
+    // Spring Boot auto-detects this and uses it to verify passwords
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    // ✅ STEP 3 — Expose AuthenticationManager for login use
+    // ✅ BEAN 3 — AuthenticationManager
+    // Used in UserService login method
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // ✅ STEP 4 — BCrypt password encoder
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // ✅ STEP 5 — URL rules per SafetyDesk role
+    // ✅ BEAN 4 — URL-level role restrictions
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
 
-                // ── PUBLIC ──────────────────────────────────────
+                // ── PUBLIC — no login needed ─────────────────────
                 .requestMatchers(
                     "/api/users/register",
                     "/api/users/login",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html"
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
                 ).permitAll()
 
                 // ── IDENTITY & ACCESS ────────────────────────────
-                // Only Admin and EHSManager can manage users
+                // Admin and EHSManager can manage users
                 .requestMatchers("/api/users/**")
                     .hasAnyRole("Admin", "EHSManager")
 
-                // Only Admin can view audit logs
+                // Only Admin, EHSManager, ComplianceOfficer
+                // can view audit logs
                 .requestMatchers("/api/audit/**")
-                    .hasRole("Admin")
+                    .hasAnyRole("Admin", "EHSManager",
+                                "ComplianceOfficer")
 
                 // ── INCIDENT MODULE ──────────────────────────────
                 // Employee, SafetyOfficer, EHSManager can CREATE
@@ -108,7 +101,8 @@ public class SecurityConfig {
                     .hasAnyRole("Employee", "SafetyOfficer",
                                 "EHSManager", "Admin")
 
-                // SafetyOfficer, EHSManager, ComplianceOfficer can READ
+                // SafetyOfficer, EHSManager,
+                // ComplianceOfficer can READ
                 .requestMatchers(
                     org.springframework.http.HttpMethod.GET,
                     "/api/incidents/**")
@@ -119,21 +113,26 @@ public class SecurityConfig {
                 .requestMatchers(
                     org.springframework.http.HttpMethod.PUT,
                     "/api/incidents/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 // ── INVESTIGATION & CAPA ─────────────────────────
                 .requestMatchers("/api/investigations/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 .requestMatchers("/api/corrective-actions/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 // ── HAZARD & RISK ────────────────────────────────
                 .requestMatchers("/api/hazards/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 .requestMatchers("/api/risk-assessments/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 // ── INSPECTION ───────────────────────────────────
                 .requestMatchers("/api/inspections/**")
@@ -141,11 +140,13 @@ public class SecurityConfig {
                                 "EHSManager", "Admin")
 
                 .requestMatchers("/api/inspection-findings/**")
-                    .hasAnyRole("SafetyOfficer", "EHSManager", "Admin")
+                    .hasAnyRole("SafetyOfficer", "EHSManager",
+                                "Admin")
 
                 // ── PERMIT TO WORK ───────────────────────────────
                 .requestMatchers("/api/permits/**")
-                    .hasAnyRole("PTWCoordinator", "EHSManager", "Admin")
+                    .hasAnyRole("PTWCoordinator", "EHSManager",
+                                "Admin")
 
                 // ── OCCUPATIONAL HEALTH ──────────────────────────
                 .requestMatchers("/api/health/**")
@@ -156,10 +157,11 @@ public class SecurityConfig {
 
                 // ── EHS REPORTS ──────────────────────────────────
                 .requestMatchers("/api/reports/**")
-                    .hasAnyRole("EHSManager", "ComplianceOfficer", "Admin")
+                    .hasAnyRole("EHSManager", "ComplianceOfficer",
+                                "Admin")
 
                 // ── NOTIFICATIONS ────────────────────────────────
-                // Any logged-in user can see their notifications
+                // Any logged-in user
                 .requestMatchers("/api/notifications/**")
                     .authenticated()
 
