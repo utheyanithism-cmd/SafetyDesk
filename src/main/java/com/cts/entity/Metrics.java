@@ -7,11 +7,11 @@ import lombok.Data;
 @Embeddable
 public class Metrics {
 
-	private int totalIncidents;
-	private double ltifr; // Lost Time Injury Frequency Rate
-	private int nearMissCount;
-	private double inspectionCompletionRate;
-	private double correctiveActionClosureRate;
-	private double permitComplianceRate;
-	private int regulatoryObligationsOverdue;
+    private Integer totalIncidents;
+    private Double ltifr;                          // Lost Time Injury Frequency Rate
+    private Integer nearMissCount;
+    private Double inspectionCompletionRate;
+    private Double correctiveActionClosureRate;
+    private Double permitComplianceRate;
+    private Integer regulatoryObligationsOverdue;
 }

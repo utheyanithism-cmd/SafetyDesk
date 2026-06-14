@@ -2,12 +2,7 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -16,34 +11,43 @@ import lombok.Data;
 @Entity
 public class RiskAssessment {
 
-	public enum StatusCategory {
-		Draft,
-		Approved,
-		Superseded
-	}
+    public enum StatusCategory {
+        Draft,
+        Approved,
+        Superseded
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int assessmentID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer assessmentID;
 
-	private int hazardID;
-	private String taskDescription;
+    // Many risk assessments → one hazard record
+    @ManyToOne
+    @JoinColumn(name = "hazardID", nullable = false)
+    private HazardRecord hazard;
 
-	@Min(1)
-	@Max(5)
-	private int likelihood;
+    private String taskDescription;
 
-	@Min(1)
-	@Max(5)
-	private int severity;
+    @Min(1)
+    @Max(5)
+    private int likelihood;
 
-	private int riskRating;
-	private String existingControls;
-	private String additionalControls;
-	private String residualRisk;
-	private int assessedByID;
-	private LocalDate assessmentDate;
+    @Min(1)
+    @Max(5)
+    private int severity;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    private int riskRating;
+    private String existingControls;
+    private String additionalControls;
+    private String residualRisk;
+
+    // Many risk assessments → assessed by one user (SafetyOfficer / EHSManager)
+    @ManyToOne
+    @JoinColumn(name = "assessedByID", nullable = false)
+    private User assessedBy;
+
+    private LocalDate assessmentDate;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCategory status;
 }
