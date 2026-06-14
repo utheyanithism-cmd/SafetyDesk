@@ -1,12 +1,14 @@
 package com.cts.config;
 
-import com.cts.entity.User;
-import com.cts.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.cts.entity.User;
+import com.cts.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor

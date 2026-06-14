@@ -1,7 +1,15 @@
 package com.cts.entity;
 
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -11,17 +19,18 @@ public class Notification {
     public enum Category {
         Incident, Permit, Inspection, Health, Compliance, CAPA
     }
+
     public enum StatusCategory {
         Unread, Read, Dismissed
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int notificationID;
+    private Integer notificationID;
 
     // Many notifications → sent to one user
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 
     private String message;

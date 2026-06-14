@@ -8,57 +8,66 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class IncidentReport {
 
-	public enum IncidentTypeCategory {
-		Injury,
-		NearMiss,
-		PropertyDamage,
-		EnvironmentalRelease,
-		UnsafeAct,
-		UnsafeCondition
-	}
+    public enum IncidentTypeCategory {
+        Injury,
+        NearMiss,
+        PropertyDamage,
+        EnvironmentalRelease,
+        UnsafeAct,
+        UnsafeCondition
+    }
 
-	public enum SeverityCategory {
-		Minor,
-		Moderate,
-		Serious,
-		Fatal
-	}
+    public enum SeverityCategory {
+        Minor,
+        Moderate,
+        Serious,
+        Fatal
+    }
 
-	public enum StatusCategory {
-		Reported,
-		UnderInvestigation,
-		CAPAAssigned,
-		Closed
-	}
+    public enum StatusCategory {
+        Reported,
+        UnderInvestigation,
+        CAPAAssigned,
+        Closed
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int incidentID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer incidentID;
 
-	private int reportedByID;
+    // Many incidents → reported by one user (Employee)
+    @ManyToOne
+    @JoinColumn(name = "reportedByID", nullable = false)
+    private User reportedBy;
 
-	private int siteID;
+    // siteID is not a User; kept as plain FK until a Site entity exists
+    private Integer siteID;
 
-	private LocalDateTime incidentDate;
+    private LocalDateTime incidentDate;
 
-	@Enumerated(EnumType.STRING)
-	private IncidentTypeCategory incidentType;
+    @Enumerated(EnumType.STRING)
+    private IncidentTypeCategory incidentType;
 
-	private String description;
-	private String location;
-	private String injuredPersonName;
+    private String description;
+    private String location;
+    private String injuredPersonName;
 
-	@Enumerated(EnumType.STRING)
-	private SeverityCategory severity;
+    @Enumerated(EnumType.STRING)
+    private SeverityCategory severity;
 
-	private int assignedInvestigatorID;
+    // Many incidents → assigned to one investigator (SafetyOfficer)
+    @ManyToOne
+    @JoinColumn(name = "assignedInvestigatorID")
+    private User assignedInvestigator;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    @Enumerated(EnumType.STRING)
+    private StatusCategory status;
 }

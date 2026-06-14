@@ -15,21 +15,21 @@ import lombok.Data;
 @Entity
 public class EHSReport {
 
-	public enum ScopeCategory {
-		Site,
-		Department,
-		Period
-	}
+    public enum ScopeCategory {
+        Site,
+        Department,
+        Period
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int reportID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer reportID;
 
-	@Enumerated(EnumType.STRING)
-	private ScopeCategory scope;
+    @Enumerated(EnumType.STRING)
+    private ScopeCategory scope;
 
-	@Embedded
-	private Metrics metrics;
+    @Embedded
+    private Metrics metrics;
 
-	private LocalDate generatedDate;
+    private LocalDate generatedDate;
 }

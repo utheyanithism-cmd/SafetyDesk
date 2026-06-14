@@ -8,28 +8,42 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class PermitExtension {
 
-	public enum StatusCategory {
-		Requested,
-		Approved,
-		Rejected
-	}
+    public enum StatusCategory {
+        Requested,
+        Approved,
+        Rejected
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int extensionID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer extensionID;
 
-	private int permitID;
-	private int requestedByID;
-	private LocalDateTime newEndDateTime;
-	private String reason;
-	private int approvedByID;
+    // Many extensions → one work permit
+    @ManyToOne
+    @JoinColumn(name = "permitID", nullable = false)
+    private WorkPermit permit;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    // Many extensions → requested by one user
+    @ManyToOne
+    @JoinColumn(name = "requestedByID", nullable = false)
+    private User requestedBy;
+
+    private LocalDateTime newEndDateTime;
+    private String reason;
+
+    // Many extensions → approved/rejected by one user (PTWCoordinator / EHSManager)
+    @ManyToOne
+    @JoinColumn(name = "approvedByID")
+    private User approvedBy;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCategory status;
 }

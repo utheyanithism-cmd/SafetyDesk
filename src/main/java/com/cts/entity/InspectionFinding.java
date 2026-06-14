@@ -8,50 +8,59 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class InspectionFinding {
 
-	public enum FindingType {
-		NonConformance,
-		Observation,
-		BestPractice
-	}
+    public enum FindingType {
+        NonConformance,
+        Observation,
+        BestPractice
+    }
 
-	public enum RiskLevel {
-		Low,
-		Medium,
-		High,
-		Critical
-	}
+    public enum RiskLevel {
+        Low,
+        Medium,
+        High,
+        Critical
+    }
 
-	public enum StatusCategory {
-		Open,
-		InProgress,
-		Closed,
-		Overdue
-	}
+    public enum StatusCategory {
+        Open,
+        InProgress,
+        Closed,
+        Overdue
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int findingID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer findingID;
 
-	private int scheduleID;
+    // Many findings → one inspection schedule
+    @ManyToOne
+    @JoinColumn(name = "scheduleID", nullable = false)
+    private InspectionSchedule schedule;
 
-	@Enumerated(EnumType.STRING)
-	private FindingType findingType;
+    @Enumerated(EnumType.STRING)
+    private FindingType findingType;
 
-	private String description;
-	private String location;
+    private String description;
+    private String location;
 
-	@Enumerated(EnumType.STRING)
-	private RiskLevel riskLevel;
+    @Enumerated(EnumType.STRING)
+    private RiskLevel riskLevel;
 
-	private int assignedToID;
-	private LocalDate dueDate;
+    // Many findings → assigned to one user for resolution
+    @ManyToOne
+    @JoinColumn(name = "assignedToID")
+    private User assignedTo;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    private LocalDate dueDate;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCategory status;
 }

@@ -1,5 +1,11 @@
 package com.cts.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.cts.dto.UserRequestDTO;
 import com.cts.dto.UserResponseDTO;
 import com.cts.entity.AuditLog;
@@ -9,12 +15,8 @@ import com.cts.exception.DuplicateEmailException;
 import com.cts.exception.UserNotFoundException;
 import com.cts.repository.AuditLogRepository;
 import com.cts.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class UserService {
         User user = mapToEntity(request);
         user.setStatus(StatusCategory.Active);
         User saved = userRepository.save(user);
-        logAudit(saved.getUserID(), "USER_REGISTERED", "User", saved.getUserID());
+        logAudit(saved, "USER_REGISTERED", "User", saved.getUserID());
         return mapToResponse(saved);
     }
 
@@ -58,9 +60,11 @@ public class UserService {
         user.setPhone(request.getPhone());
         user.setSiteID(request.getSiteID());
         user.setDepartmentID(request.getDepartmentID());
-        if (request.getStatus() != null) user.setStatus(request.getStatus());
+        if (request.getStatus() != null) {
+			user.setStatus(request.getStatus());
+		}
         User updated = userRepository.save(user);
-        logAudit(id, "USER_UPDATED", "User", id);
+        logAudit(updated, "USER_UPDATED", "User", id);
         return mapToResponse(updated);
     }
 
@@ -70,13 +74,18 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
         user.setStatus(StatusCategory.Inactive);
         userRepository.save(user);
-        logAudit(id, "USER_DEACTIVATED", "User", id);
+        logAudit(user, "USER_DEACTIVATED", "User", id);
     }
 
-    // AUDIT LOGGER
-    private void logAudit(int userID, String action, String entityType, int recordID) {
+    // ---------- helper methods ----------
+
+    /*
+     * AuditLog.user is now a User object (@ManyToOne), not a raw int.
+     * We pass the already-loaded User reference directly — no extra DB lookup needed.
+     */
+    private void logAudit(User actor, String action, String entityType, int recordID) {
         AuditLog log = new AuditLog();
-        log.setUserID(userID);
+        log.setUser(actor);           // set the User object, not a raw ID
         log.setAction(action);
         log.setEntityType(entityType);
         log.setRecordID(recordID);

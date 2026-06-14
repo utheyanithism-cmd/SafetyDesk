@@ -8,31 +8,46 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class CorrectiveAction {
 
-	public enum StatusCategory {
-		Open,
-		InProgress,
-		Completed,
-		Overdue,
-		Verified
-	}
+    public enum StatusCategory {
+        Open,
+        InProgress,
+        Completed,
+        Overdue,
+        Verified
+    }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int actionID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer actionID;
 
-	private int incidentID;
-	private String description;
-	private int assignedToID;
-	private LocalDate dueDate;
-	private LocalDate closedDate;
-	private int verifiedByID;
+    // Many corrective actions → one incident report (CAPA raised from an incident)
+    @ManyToOne
+    @JoinColumn(name = "incidentID", nullable = false)
+    private IncidentReport incident;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    private String description;
+
+    // Many corrective actions → assigned to one user
+    @ManyToOne
+    @JoinColumn(name = "assignedToID", nullable = false)
+    private User assignedTo;
+
+    private LocalDate dueDate;
+    private LocalDate closedDate;
+
+    // Many corrective actions → verified by one user (EHSManager / SafetyOfficer)
+    @ManyToOne
+    @JoinColumn(name = "verifiedByID")
+    private User verifiedBy;
+
+    @Enumerated(EnumType.STRING)
+    private StatusCategory status;
 }

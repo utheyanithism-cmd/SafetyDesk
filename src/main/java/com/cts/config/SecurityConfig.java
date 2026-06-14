@@ -1,8 +1,5 @@
 package com.cts.config;
 
-import com.cts.entity.User;
-import com.cts.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.List;
+import com.cts.entity.User;
+import com.cts.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
