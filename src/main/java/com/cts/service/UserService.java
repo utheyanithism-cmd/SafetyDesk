@@ -64,7 +64,7 @@ public class UserService {
         return mapToResponse(updated);
     }
 
-    // SOFT DELETE (deactivation)
+    // DEACTIVATION
     public void deactivateUser(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
@@ -84,7 +84,6 @@ public class UserService {
         auditLogRepository.save(log);
     }
 
-    // MAPPER: Request → Entity
     private User mapToEntity(UserRequestDTO dto) {
         User user = new User();
         user.setName(dto.getName());
@@ -97,7 +96,6 @@ public class UserService {
         return user;
     }
 
-    // MAPPER: Entity → Response
     private UserResponseDTO mapToResponse(User user) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setUserID(user.getUserID());
