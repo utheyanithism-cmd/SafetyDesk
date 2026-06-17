@@ -2,44 +2,59 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import com.cts.enums.InspectionStatus;
+import com.cts.enums.InspectionType;
 
-@Data
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * InspectionSchedule (Story 17): a planned safety inspection at a site.
+ */
 @Entity
-public class InspectionSchedule {
-
-    public enum InspectionType {
-        Routine,
-        Compliance,
-        Surprise,
-        IncidentFollowUp
-    }
-
-    public enum StatusCategory {
-        Scheduled,
-        Completed,
-        Missed,
-        Rescheduled
-    }
+@Table(name = "inspection_schedule")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class InspectionSchedule extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer scheduleID;
+    @Column(name = "schedule_id")
+    private Long scheduleId;
 
-    // siteID kept as plain FK until a Site entity is introduced
-    private Integer siteID;
+    @Column(name = "site_id", nullable = false)
+    private Long siteId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "inspection_type", nullable = false)
     private InspectionType inspectionType;
 
-    // Many inspection schedules → assigned to one officer (SafetyOfficer / ComplianceOfficer)
-    @ManyToOne
-    @JoinColumn(name = "assignedOfficerID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_officer_id", nullable = false)
     private User assignedOfficer;
 
+    @Column(name = "planned_date", nullable = false)
     private LocalDate plannedDate;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private InspectionStatus status;
 }

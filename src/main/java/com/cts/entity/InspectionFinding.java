@@ -2,56 +2,72 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.FindingStatus;
+import com.cts.enums.FindingType;
+import com.cts.enums.RiskLevel;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * InspectionFinding (Story 18): a finding raised during a completed inspection.
+ */
 @Entity
-public class InspectionFinding {
+@Table(name = "inspection_finding")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class InspectionFinding extends Auditable {
 
-	public enum FindingType {
-		NonConformance,
-		Observation,
-		BestPractice
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "finding_id")
+    private Long findingId;
 
-	public enum RiskLevel {
-		Low,
-		Medium,
-		High,
-		Critical
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private InspectionSchedule schedule;
 
-	public enum StatusCategory {
-		Open,
-		InProgress,
-		Closed,
-		Overdue
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "finding_type", nullable = false)
+    private FindingType findingType;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int findingID;
+    @Column(name = "description", length = 2000)
+    private String description;
 
-	private int scheduleID;
+    @Column(name = "location")
+    private String location;
 
-	@Enumerated(EnumType.STRING)
-	private FindingType findingType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "risk_level", nullable = false)
+    private RiskLevel riskLevel;
 
-	private String description;
-	private String location;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id", nullable = false)
+    private User assignedTo;
 
-	@Enumerated(EnumType.STRING)
-	private RiskLevel riskLevel;
+    // Required for NonConformance, optional otherwise (enforced in service)
+    @Column(name = "due_date")
+    private LocalDate dueDate;
 
-	private int assignedToID;
-	private LocalDate dueDate;
-
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private FindingStatus status;
 }
