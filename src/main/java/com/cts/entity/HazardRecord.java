@@ -2,47 +2,68 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.AssessmentType;
+import com.cts.enums.FitnessDecision;
+import com.cts.enums.HealthRecordStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * HealthRecord (Story 21): an occupational health surveillance assessment.
+ */
 @Entity
-public class HazardRecord {
+@Table(name = "health_record")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class HealthRecord extends Auditable {
 
-	public enum HazardTypeCategory {
-		Physical,
-		Chemical,
-		Biological,
-		Ergonomic,
-		Psychosocial
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "health_record_id")
+    private Long healthRecordId;
 
-	public enum StatusCategory {
-		Open,
-		Mitigated,
-		Closed,
-		Recurring
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private User employee;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int hazardID;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "assessment_type", nullable = false)
+    private AssessmentType assessmentType;
 
-	private int siteID;
-	private String location;
+    @Column(name = "assessment_date", nullable = false)
+    private LocalDate assessmentDate;
 
-	@Enumerated(EnumType.STRING)
-	private HazardTypeCategory hazardType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conducted_by_id", nullable = false)
+    private User conductedBy;
 
-	private String description;
-	private int identifiedByID;
-	private LocalDate identifiedDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "fitness_decision", nullable = false)
+    private FitnessDecision fitnessDecision;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    @Column(name = "next_assessment_date")
+    private LocalDate nextAssessmentDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private HealthRecordStatus status;
 }
