@@ -2,56 +2,65 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.HazardStatus;
+import com.cts.enums.HazardType;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * HazardRecord (Story 15): an identified workplace hazard in the site hazard register.
+ */
 @Entity
-public class HazardRecord {
-
-    public enum HazardTypeCategory {
-        Physical,
-        Chemical,
-        Biological,
-        Ergonomic,
-        Psychosocial
-    }
-
-    public enum StatusCategory {
-        Open,
-        Mitigated,
-        Closed,
-        Recurring
-    }
+@Table(name = "hazard_record")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class HazardRecord extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer hazardID;
+    @Column(name = "hazard_id")
+    private Long hazardId;
 
-    // siteID kept as plain FK until a Site entity is introduced
-    private Integer siteID;
+    @Column(name = "site_id", nullable = false)
+    private Long siteId;
 
+    @Column(name = "location")
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private HazardTypeCategory hazardType;
+    @Column(name = "hazard_type", nullable = false)
+    private HazardType hazardType;
 
+    @Column(name = "description", length = 2000)
     private String description;
 
-    // Many hazard records → identified by one user (SafetyOfficer / Employee)
-    @ManyToOne
-    @JoinColumn(name = "identifiedByID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "identified_by_id", nullable = false)
     private User identifiedBy;
 
+    @Column(name = "identified_date", nullable = false)
     private LocalDate identifiedDate;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private HazardStatus status;
 }

@@ -2,52 +2,65 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.CorrectiveActionStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * CorrectiveAction (Story 14): a CAPA item linked to an incident.
+ */
 @Entity
-public class CorrectiveAction {
-
-    public enum StatusCategory {
-        Open,
-        InProgress,
-        Completed,
-        Overdue,
-        Verified
-    }
+@Table(name = "corrective_action")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CorrectiveAction extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer actionID;
+    @Column(name = "action_id")
+    private Long actionId;
 
-    // Many corrective actions → one incident report (CAPA raised from an incident)
-    @ManyToOne
-    @JoinColumn(name = "incidentID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "incident_id", nullable = false)
     private IncidentReport incident;
 
+    @Column(name = "description", length = 2000, nullable = false)
     private String description;
 
-    // Many corrective actions → assigned to one user
-    @ManyToOne
-    @JoinColumn(name = "assignedToID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id", nullable = false)
     private User assignedTo;
 
+    @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
+
+    @Column(name = "closed_date")
     private LocalDate closedDate;
 
-    // Many corrective actions → verified by one user (EHSManager / SafetyOfficer)
-    @ManyToOne
-    @JoinColumn(name = "verifiedByID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "verified_by_id")
     private User verifiedBy;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private CorrectiveActionStatus status;
 }

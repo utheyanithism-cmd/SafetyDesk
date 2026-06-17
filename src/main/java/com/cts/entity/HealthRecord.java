@@ -2,64 +2,68 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.AssessmentType;
+import com.cts.enums.FitnessDecision;
+import com.cts.enums.HealthRecordStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * HealthRecord (Story 21): an occupational health surveillance assessment.
+ */
 @Entity
-public class HealthRecord {
-
-    public enum AssessmentType {
-        PreEmployment,
-        Periodic,
-        PostIncident,
-        ReturnToWork,
-        Exit
-    }
-
-    public enum FitnessDecision {
-        FitForWork,
-        FitWithRestrictions,
-        TemporaryUnfit,
-        PermanentlyUnfit
-    }
-
-    public enum StatusCategory {
-        Completed,
-        PendingReview
-    }
+@Table(name = "health_record")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class HealthRecord extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer healthRecordID;
+    @Column(name = "health_record_id")
+    private Long healthRecordId;
 
-    // Many health records → one employee
-    @ManyToOne
-    @JoinColumn(name = "employeeID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
     private User employee;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "assessment_type", nullable = false)
     private AssessmentType assessmentType;
 
+    @Column(name = "assessment_date", nullable = false)
     private LocalDate assessmentDate;
 
-    // Many health records → conducted by one nurse / health officer (OHNurse)
-    @ManyToOne
-    @JoinColumn(name = "conductedByID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conducted_by_id", nullable = false)
     private User conductedBy;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "fitness_decision", nullable = false)
     private FitnessDecision fitnessDecision;
 
+    @Column(name = "next_assessment_date")
     private LocalDate nextAssessmentDate;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private HealthRecordStatus status;
 }

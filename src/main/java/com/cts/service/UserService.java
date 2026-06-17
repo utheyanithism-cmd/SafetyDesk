@@ -1,120 +1,24 @@
 package com.cts.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
+import com.cts.dto.request.UserRequest;
+import com.cts.dto.request.UserUpdateRequest;
+import com.cts.dto.response.UserResponse;
 
-import com.cts.dto.UserRequestDTO;
-import com.cts.dto.UserResponseDTO;
-import com.cts.entity.AuditLog;
-import com.cts.entity.User;
-import com.cts.entity.User.StatusCategory;
-import com.cts.exception.DuplicateEmailException;
-import com.cts.exception.UserNotFoundException;
-import com.cts.repository.AuditLogRepository;
-import com.cts.repository.UserRepository;
+/**
+ * Business operations for User (Story 9): full CRUD plus soft-delete.
+ */
+public interface UserService {
 
-import lombok.RequiredArgsConstructor;
+    UserResponse createUser(UserRequest request);
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+    UserResponse getUserById(Long userId);
 
-    private final UserRepository userRepository;
-    private final AuditLogRepository auditLogRepository;
+    List<UserResponse> getAllUsers();
 
-    // CREATE
-    public UserResponseDTO registerUser(UserRequestDTO request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new DuplicateEmailException("Email already registered: " + request.getEmail());
-        }
-        User user = mapToEntity(request);
-        user.setStatus(StatusCategory.Active);
-        User saved = userRepository.save(user);
-        logAudit(saved, "USER_REGISTERED", "User", saved.getUserID());
-        return mapToResponse(saved);
-    }
+    UserResponse updateUser(Long userId, UserUpdateRequest request);
 
-    // READ ALL
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream().map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    // READ ONE
-    public UserResponseDTO getUserById(int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-        return mapToResponse(user);
-    }
-
-    // UPDATE
-    public UserResponseDTO updateUser(int id, UserRequestDTO request) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-        user.setName(request.getName());
-        user.setRole(request.getRole());
-        user.setPhone(request.getPhone());
-        user.setSiteID(request.getSiteID());
-        user.setDepartmentID(request.getDepartmentID());
-        if (request.getStatus() != null) {
-			user.setStatus(request.getStatus());
-		}
-        User updated = userRepository.save(user);
-        logAudit(updated, "USER_UPDATED", "User", id);
-        return mapToResponse(updated);
-    }
-
-    // DEACTIVATION
-    public void deactivateUser(int id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-        user.setStatus(StatusCategory.Inactive);
-        userRepository.save(user);
-        logAudit(user, "USER_DEACTIVATED", "User", id);
-    }
-
-    // ---------- helper methods ----------
-
-    /*
-     * AuditLog.user is now a User object (@ManyToOne), not a raw int.
-     * We pass the already-loaded User reference directly — no extra DB lookup needed.
-     */
-    private void logAudit(User actor, String action, String entityType, int recordID) {
-        AuditLog log = new AuditLog();
-        log.setUser(actor);           // set the User object, not a raw ID
-        log.setAction(action);
-        log.setEntityType(entityType);
-        log.setRecordID(recordID);
-        log.setTimestamp(LocalDateTime.now());
-        auditLogRepository.save(log);
-    }
-
-    private User mapToEntity(UserRequestDTO dto) {
-        User user = new User();
-        user.setName(dto.getName());
-        user.setRole(dto.getRole());
-        user.setEmail(dto.getEmail());
-        user.setPhone(dto.getPhone());
-        user.setSiteID(dto.getSiteID());
-        user.setDepartmentID(dto.getDepartmentID());
-        user.setPassword(dto.getPassword());
-        return user;
-    }
-
-    private UserResponseDTO mapToResponse(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setUserID(user.getUserID());
-        dto.setName(user.getName());
-        dto.setRole(user.getRole());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setSiteID(user.getSiteID());
-        dto.setDepartmentID(user.getDepartmentID());
-        dto.setStatus(user.getStatus());
-        return dto;
-    }
+    // Soft-delete = deactivation (Story 9), not a hard DB delete
+    void deactivateUser(Long userId);
 }

@@ -2,44 +2,59 @@ package com.cts.entity;
 
 import java.time.LocalDateTime;
 
+import com.cts.enums.NotificationCategory;
+import com.cts.enums.NotificationStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * Notification (Story 24): an in-app alert targeted at a specific user.
+ */
 @Entity
+@Table(name = "notification")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Notification {
-
-    public enum Category {
-        Incident, Permit, Inspection, Health, Compliance, CAPA
-    }
-
-    public enum StatusCategory {
-        Unread, Read, Dismissed
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer notificationID;
+    @Column(name = "notification_id")
+    private Long notificationId;
 
-    // Many notifications → sent to one user
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "message", length = 1000, nullable = false)
     private String message;
 
     @Enumerated(EnumType.STRING)
-    private Category category;
+    @Column(name = "category", nullable = false)
+    private NotificationCategory category;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private NotificationStatus status;
 
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 }
