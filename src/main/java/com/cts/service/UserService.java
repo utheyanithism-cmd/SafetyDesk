@@ -10,6 +10,8 @@ import com.cts.exception.UserNotFoundException;
 import com.cts.repository.AuditLogRepository;
 import com.cts.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,8 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final AuditLogRepository auditLogRepository;
+	@Autowired
+    private UserRepository userRepository;
+	@Autowired
+    private AuditLogRepository auditLogRepository;
 
     // CREATE
     public UserResponseDTO registerUser(UserRequestDTO request) {
