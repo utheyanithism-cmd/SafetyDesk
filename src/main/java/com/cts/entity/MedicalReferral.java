@@ -2,36 +2,64 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
+import com.cts.enums.ReferralStatus;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * MedicalReferral (Story 22): a referral to a specialist linked to a health record.
+ */
 @Entity
-public class MedicalReferral {
+@Table(name = "medical_referral")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class MedicalReferral extends Auditable {
 
-	public enum StatusCategory {
-		Referred,
-		Attended,
-		FollowUpRequired,
-		Closed
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "referral_id")
+    private Long referralId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int referralID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "health_record_id", nullable = false)
+    private HealthRecord healthRecord;
 
-	private int healthRecordID;
-	private int employeeID;
-	private String referralReason;
-	private String referredToSpeciality;
-	private LocalDate referralDate;
-	private String outcomeSummary;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private User employee;
 
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    @Column(name = "referral_reason", length = 1000, nullable = false)
+    private String referralReason;
+
+    @Column(name = "referred_to_speciality")
+    private String referredToSpeciality;
+
+    @Column(name = "referral_date", nullable = false)
+    private LocalDate referralDate;
+
+    @Column(name = "outcome_summary", length = 2000)
+    private String outcomeSummary;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ReferralStatus status;
 }

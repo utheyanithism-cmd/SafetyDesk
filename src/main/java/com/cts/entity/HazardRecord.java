@@ -2,9 +2,8 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
-import com.cts.enums.AssessmentType;
-import com.cts.enums.FitnessDecision;
-import com.cts.enums.HealthRecordStatus;
+import com.cts.enums.HazardStatus;
+import com.cts.enums.HazardType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,45 +24,43 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * HealthRecord (Story 21): an occupational health surveillance assessment.
+ * HazardRecord (Story 15): an identified workplace hazard in the site hazard register.
  */
 @Entity
-@Table(name = "health_record")
+@Table(name = "hazard_record")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HealthRecord extends Auditable {
+public class HazardRecord extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "health_record_id")
-    private Long healthRecordId;
+    @Column(name = "hazard_id")
+    private Long hazardId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private User employee;
+    @Column(name = "site_id", nullable = false)
+    private Long siteId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "assessment_type", nullable = false)
-    private AssessmentType assessmentType;
-
-    @Column(name = "assessment_date", nullable = false)
-    private LocalDate assessmentDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "conducted_by_id", nullable = false)
-    private User conductedBy;
+    @Column(name = "location")
+    private String location;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "fitness_decision", nullable = false)
-    private FitnessDecision fitnessDecision;
+    @Column(name = "hazard_type", nullable = false)
+    private HazardType hazardType;
 
-    @Column(name = "next_assessment_date")
-    private LocalDate nextAssessmentDate;
+    @Column(name = "description", length = 2000)
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "identified_by_id", nullable = false)
+    private User identifiedBy;
+
+    @Column(name = "identified_date", nullable = false)
+    private LocalDate identifiedDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private HealthRecordStatus status;
+    private HazardStatus status;
 }

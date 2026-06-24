@@ -2,52 +2,85 @@ package com.cts.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
+import com.cts.enums.RiskAssessmentStatus;
+import com.cts.enums.RiskLevel;
 
-@Data
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * RiskAssessment (Story 16): quantified risk for a hazard.
+ * RiskRating (score) and RiskLevel (band) are auto-calculated from
+ * Likelihood x Severity in the service, never supplied by the client.
+ */
 @Entity
-public class RiskAssessment {
-
-    public enum StatusCategory {
-        Draft,
-        Approved,
-        Superseded
-    }
+@Table(name = "risk_assessment")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RiskAssessment extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer assessmentID;
+    @Column(name = "assessment_id")
+    private Long assessmentId;
 
-    // Many risk assessments → one hazard record
-    @ManyToOne
-    @JoinColumn(name = "hazardID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hazard_id", nullable = false)
     private HazardRecord hazard;
 
+    @Column(name = "task_description", length = 2000)
     private String taskDescription;
 
-    @Min(1)
-    @Max(5)
-    private int likelihood;
+    @Column(name = "likelihood", nullable = false)
+    private Integer likelihood; // 1-5
 
-    @Min(1)
-    @Max(5)
-    private int severity;
+    @Column(name = "severity", nullable = false)
+    private Integer severity; // 1-5
 
-    private int riskRating;
+    // Numeric score 1-25 (Likelihood x Severity)
+    @Column(name = "risk_rating", nullable = false)
+    private Integer riskRating;
+
+    // Band derived from riskRating (Low/Medium/High/Critical)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "risk_level", nullable = false)
+    private RiskLevel riskLevel;
+
+    @Column(name = "existing_controls", length = 2000)
     private String existingControls;
+
+    @Column(name = "additional_controls", length = 2000)
     private String additionalControls;
+
+    @Column(name = "residual_risk", length = 2000)
     private String residualRisk;
 
-    // Many risk assessments → assessed by one user (SafetyOfficer / EHSManager)
-    @ManyToOne
-    @JoinColumn(name = "assessedByID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assessed_by_id", nullable = false)
     private User assessedBy;
 
+    @Column(name = "assessment_date", nullable = false)
     private LocalDate assessmentDate;
 
     @Enumerated(EnumType.STRING)
-    private StatusCategory status;
+    @Column(name = "status", nullable = false)
+    private RiskAssessmentStatus status;
 }

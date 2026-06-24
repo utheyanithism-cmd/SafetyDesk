@@ -1,64 +1,80 @@
 package com.cts.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import com.cts.enums.IncidentStatus;
+import com.cts.enums.IncidentType;
+import com.cts.enums.Severity;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * IncidentReport (Story 12): a reported incident, near miss, or unsafe act/condition.
+ */
 @Entity
-public class IncidentReport {
+@Table(name = "incident_report")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class IncidentReport extends Auditable {
 
-	public enum IncidentTypeCategory {
-		Injury,
-		NearMiss,
-		PropertyDamage,
-		EnvironmentalRelease,
-		UnsafeAct,
-		UnsafeCondition
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "incident_id")
+    private Long incidentId;
 
-	public enum SeverityCategory {
-		Minor,
-		Moderate,
-		Serious,
-		Fatal
-	}
+    // The user who reported it (FK column reported_by_id; required)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_by_id", nullable = false)
+    private User reportedBy;
 
-	public enum StatusCategory {
-		Reported,
-		UnderInvestigation,
-		CAPAAssigned,
-		Closed
-	}
+    @Column(name = "site_id", nullable = false)
+    private Long siteId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int incidentID;
+    @Column(name = "incident_date", nullable = false)
+    private LocalDate incidentDate;
 
-	private int reportedByID;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "incident_type", nullable = false)
+    private IncidentType incidentType;
 
-	private int siteID;
+    @Column(name = "description", length = 2000)
+    private String description;
 
-	private LocalDateTime incidentDate;
+    @Column(name = "location")
+    private String location;
 
-	@Enumerated(EnumType.STRING)
-	private IncidentTypeCategory incidentType;
+    @Column(name = "injured_person_name")
+    private String injuredPersonName;
 
-	private String description;
-	private String location;
-	private String injuredPersonName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "severity", nullable = false)
+    private Severity severity;
 
-	@Enumerated(EnumType.STRING)
-	private SeverityCategory severity;
+    // Nullable until an investigator is assigned (FK column assigned_investigator_id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_investigator_id")
+    private User assignedInvestigator;
 
-	private int assignedInvestigatorID;
-
-	@Enumerated(EnumType.STRING)
-	private StatusCategory status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private IncidentStatus status;
 }
