@@ -25,10 +25,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for CorrectiveAction (Story 14).
- * Base path: /api/corrective-actions
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/corrective-actions")

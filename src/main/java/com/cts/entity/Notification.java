@@ -23,9 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Notification (Story 24): an in-app alert targeted at a specific user.
- */
+
 @Entity
 @Table(name = "notification")
 @Getter

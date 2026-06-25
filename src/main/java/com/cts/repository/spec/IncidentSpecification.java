@@ -9,9 +9,6 @@ import com.cts.enums.IncidentStatus;
 import com.cts.enums.IncidentType;
 import com.cts.enums.Severity;
 
-/**
- * Builds dynamic WHERE conditions for incident queries (Story 12).
- */
 public final class IncidentSpecification {
 
     private IncidentSpecification() { }

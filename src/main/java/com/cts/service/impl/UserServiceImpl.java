@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(UserRequest request) {
         log.info("Creating user with email: {}", request.getEmail());
 
-        // Story 9: enforce unique email -> 409 if duplicate
         if (userRepository.existsByEmail(request.getEmail())) {
             log.warn("Registration failed - email already exists: {}", request.getEmail());
             throw new DuplicateResourceException(
@@ -48,12 +47,10 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toEntity(request);
 
-        // Story 9/10: never store plain-text passwords - hash with BCrypt before saving
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User saved = userRepository.save(user);
 
-        // Story 9: registration must generate an audit log entry
         auditLogService.record(saved.getUserId(), "CREATE_USER", ENTITY_TYPE, saved.getUserId());
 
         log.info("User created successfully with id: {}", saved.getUserId());
@@ -91,8 +88,6 @@ public class UserServiceImpl implements UserService {
             }
             user.setEmail(request.getEmail());
         }
-
-        // Only update fields that were actually provided
         if (request.getName() != null)         user.setName(request.getName());
         if (request.getRole() != null)         user.setRole(request.getRole());
         if (request.getPhone() != null)        user.setPhone(request.getPhone());
@@ -113,16 +108,14 @@ public class UserServiceImpl implements UserService {
         log.info("Deactivating (soft-delete) user with id: {}", userId);
         User user = findUserOrThrow(userId);
 
-        // Story 9: soft-delete = set Status to Inactive, NOT a hard delete
-        user.setStatus(UserStatus.INACTIVE);
+       user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
 
         auditLogService.record(userId, "DEACTIVATE_USER", ENTITY_TYPE, userId);
         log.info("User deactivated successfully with id: {}", userId);
     }
 
-    // Shared private helper to avoid repeating the not-found logic
-    private User findUserOrThrow(Long userId) {
+  private User findUserOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.warn("User not found with id: {}", userId);

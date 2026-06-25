@@ -23,9 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * InspectionSchedule (Story 17): a planned safety inspection at a site.
- */
 @Entity
 @Table(name = "inspection_schedule")
 @Getter

@@ -25,10 +25,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for Notification (Story 24).
- * Base path: /api/notifications
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/notifications")

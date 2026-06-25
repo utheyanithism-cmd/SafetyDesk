@@ -28,18 +28,9 @@ import com.cts.enums.Role;
 import com.cts.enums.Severity;
 import com.cts.enums.UserStatus;
 
-/**
- * Lets query/path parameters accept the SAME story spellings (e.g. "Completed",
- * "SafetyOfficer", "NearMiss") that the JSON body accepts.
- *
- * Each enum has a static fromValue(String) that handles label OR Java-name.
- * Spring's default StringToEnum converter only matches the exact Java name,
- * so we override it for our enums here.
- */
 public class StringToEnumConverterFactory {
 
-    // A reusable converter that calls a given enum's fromValue(...) method.
-    private static <T extends Enum<T>> Converter<String, T> forEnum(java.util.function.Function<String, T> fromValue) {
+	private static <T extends Enum<T>> Converter<String, T> forEnum(java.util.function.Function<String, T> fromValue) {
         return new Converter<String, T>() {
             @Override
             public T convert(String source) {

@@ -27,14 +27,6 @@ import com.cts.enums.Role;
 import com.cts.enums.Severity;
 import com.cts.enums.UserStatus;
 
-/**
- * One concrete converter class per enum. Each explicitly implements
- * Converter<String, ThatEnum>, so Spring can read the target type and
- * register it correctly (a generic helper would erase the type to Enum).
- *
- * Each delegates to the enum's fromValue(...) so query/path params accept
- * the same story spellings the JSON body accepts.
- */
 public final class EnumConverters {
 
     private EnumConverters() { }

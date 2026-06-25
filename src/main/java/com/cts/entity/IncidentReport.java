@@ -24,9 +24,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * IncidentReport (Story 12): a reported incident, near miss, or unsafe act/condition.
- */
 @Entity
 @Table(name = "incident_report")
 @Getter

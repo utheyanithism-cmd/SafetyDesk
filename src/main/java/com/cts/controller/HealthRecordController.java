@@ -28,10 +28,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for HealthRecord (Story 21).
- * Base path: /api/health-records
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/health-records")

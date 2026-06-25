@@ -6,9 +6,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.cts.entity.AuditLog;
 
-/**
- * Builds dynamic WHERE conditions for audit log queries (Story 11).
- */
 public final class AuditLogSpecification {
 
     private AuditLogSpecification() { }

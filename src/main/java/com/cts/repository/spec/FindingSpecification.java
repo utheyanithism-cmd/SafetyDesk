@@ -9,9 +9,6 @@ import com.cts.enums.FindingStatus;
 import com.cts.enums.FindingType;
 import com.cts.enums.RiskLevel;
 
-/**
- * Builds dynamic WHERE conditions for inspection finding queries (Story 18).
- */
 public final class FindingSpecification {
 
     private FindingSpecification() { }

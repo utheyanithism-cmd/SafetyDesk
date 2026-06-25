@@ -26,10 +26,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for RiskAssessment (Story 16).
- * Base path: /api/risk-assessments
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/risk-assessments")

@@ -4,9 +4,6 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
-/**
- * Payload to approve or reject an extension (Story 20).
- */
 @Data
 public class ExtensionDecisionRequest {
 

@@ -11,10 +11,6 @@ import com.cts.entity.User;
 
 import lombok.Getter;
 
-/**
- * Wraps our User entity as a Spring Security principal.
- * Authority is "ROLE_" + role name (Spring's convention for hasRole checks).
- */
 @Getter
 public class AppUserDetails implements UserDetails {
 

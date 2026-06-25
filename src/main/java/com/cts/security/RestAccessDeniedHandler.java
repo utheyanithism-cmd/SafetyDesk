@@ -17,11 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Returns a JSON 403 body (Story 51) and audit-logs the forbidden access
- * with the authenticated user's id. Writes the small fixed JSON shape directly
- * to avoid an ObjectMapper dependency in the security layer.
- */
 @Component
 @RequiredArgsConstructor
 public class RestAccessDeniedHandler implements AccessDeniedHandler {

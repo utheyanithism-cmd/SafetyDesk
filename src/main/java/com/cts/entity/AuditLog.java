@@ -15,10 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * AuditLog (Story 11): immutable record of safety-critical actions.
- * Fields per story: AuditID, UserID, Action, EntityType, RecordID, Timestamp.
- */
 @Entity
 @Table(name = "audit_log")
 @Getter

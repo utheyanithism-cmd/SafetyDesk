@@ -24,10 +24,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for User (Story 9).
- * Base path: /api/users
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/users")

@@ -7,10 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.cts.entity.User;
 
-/**
- * Data access for User. Extending JpaRepository gives us
- * save, findById, findAll, deleteById, etc. for free.
- */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

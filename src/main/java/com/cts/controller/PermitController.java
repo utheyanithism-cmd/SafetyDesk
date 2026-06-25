@@ -29,10 +29,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for WorkPermit (Story 19).
- * Base path: /api/permits
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/permits")

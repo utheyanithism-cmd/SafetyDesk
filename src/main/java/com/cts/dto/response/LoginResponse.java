@@ -15,4 +15,5 @@ public class LoginResponse {
     private Long userId;
     private Role role;
     private Long siteId;
+    private String expiresIn;
 }

@@ -8,15 +8,11 @@ import com.cts.entity.User;
 import com.cts.enums.Role;
 import com.cts.exception.AccessForbiddenException;
 
-/**
- * Reads the authenticated user from the security context.
- * Services call this instead of touching Spring Security directly.
- */
+
 @Component
 public class CurrentUser {
 
-    /** The full authenticated User entity. Throws 403 if somehow unauthenticated. */
-    public User get() {
+      public User get() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof AppUserDetails details)) {
             throw new AccessForbiddenException("No authenticated user in context");

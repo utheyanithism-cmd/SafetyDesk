@@ -8,9 +8,6 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
-/**
- * Payload to create a corrective action (Story 14).
- */
 @Data
 public class CorrectiveActionRequest {
 

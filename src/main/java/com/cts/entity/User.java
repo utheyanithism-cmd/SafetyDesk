@@ -25,10 +25,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * User (Story 9): system user with role-based and site-scoped access.
- * Referenced (inverse) side of the system's bidirectional relationships.
- */
 @Entity
 @Table(
     name = "users",

@@ -6,10 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Registers concrete enum converters so query/path params accept the story
- * spellings (e.g. "Chemical", "Open", "SafetyOfficer") - matching the JSON body.
- */
 @Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

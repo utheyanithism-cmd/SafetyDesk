@@ -8,9 +8,6 @@ import com.cts.entity.HazardRecord;
 import com.cts.enums.HazardStatus;
 import com.cts.enums.HazardType;
 
-/**
- * Builds dynamic WHERE conditions for hazard queries (Story 15).
- */
 public final class HazardSpecification {
 
     private HazardSpecification() { }

@@ -20,10 +20,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * EHSReport (Story 23): a generated analytics snapshot. Scope parameters plus
- * the computed metrics (stored as individual columns) and the generation timestamp.
- */
 @Entity
 @Table(name = "ehs_report")
 @Getter

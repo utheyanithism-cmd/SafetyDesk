@@ -8,9 +8,6 @@ import com.cts.entity.Notification;
 import com.cts.enums.NotificationCategory;
 import com.cts.enums.NotificationStatus;
 
-/**
- * Builds dynamic WHERE conditions for notification queries (Story 24).
- */
 public final class NotificationSpecification {
 
     private NotificationSpecification() { }

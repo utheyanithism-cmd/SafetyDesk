@@ -9,9 +9,6 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
-/**
- * Story 24: mark multiple notifications as Read or Dismissed in one call.
- */
 @Data
 public class BulkStatusUpdateRequest {
 

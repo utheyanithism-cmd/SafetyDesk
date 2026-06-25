@@ -17,9 +17,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Authentication endpoints (Story 10): login + token refresh.
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")

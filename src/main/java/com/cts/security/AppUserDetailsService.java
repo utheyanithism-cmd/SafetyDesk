@@ -9,9 +9,6 @@ import com.cts.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Loads a user by email for Spring Security.
- */
 @Service
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {

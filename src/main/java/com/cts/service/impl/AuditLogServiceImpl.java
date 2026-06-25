@@ -40,7 +40,6 @@ public class AuditLogServiceImpl implements AuditLogService {
                 action, entityType, recordId, userId);
     }
 
-    // ===== READ (Story 11) =====
     @Override
     @Transactional(readOnly = true)
     public Page<AuditLogResponse> search(Long userId, String entityType, Long recordId, String action,
@@ -49,7 +48,6 @@ public class AuditLogServiceImpl implements AuditLogService {
         return auditLogRepository.findAll(spec, pageable).map(this::toResponse);
     }
 
-    // ===== EXPORT: CSV (Story 11) =====
     @Override
     @Transactional(readOnly = true)
     public String exportCsv(Long userId, String entityType, Long recordId, String action,
@@ -70,7 +68,6 @@ public class AuditLogServiceImpl implements AuditLogService {
         return sb.toString();
     }
 
-    // ===== EXPORT: print-ready HTML (browser -> Save as PDF) =====
     @Override
     @Transactional(readOnly = true)
     public String exportHtml(Long userId, String entityType, Long recordId, String action,
@@ -102,8 +99,6 @@ public class AuditLogServiceImpl implements AuditLogService {
         return sb.toString();
     }
 
-    // --- helpers ---
-
     private AuditLogResponse toResponse(AuditLog a) {
         return AuditLogResponse.builder()
                 .auditId(a.getAuditId())
@@ -115,7 +110,6 @@ public class AuditLogServiceImpl implements AuditLogService {
                 .build();
     }
 
-    // CSV-escape: wrap in quotes if it contains a comma/quote/newline
     private String csv(String value) {
         if (value == null) return "";
         if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
@@ -124,8 +118,7 @@ public class AuditLogServiceImpl implements AuditLogService {
         return value;
     }
 
-    // minimal HTML-escape
-    private String html(String value) {
+   private String html(String value) {
         if (value == null) return "";
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }

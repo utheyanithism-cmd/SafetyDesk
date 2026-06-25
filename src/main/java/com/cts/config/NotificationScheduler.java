@@ -10,11 +10,6 @@ import com.cts.service.PermitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Periodically fires Story 24 time-based reminders and auto-status sweeps.
- * Disable by removing @EnableScheduling on the application class, or adjust
- * the fixedRate values. Times are in milliseconds.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor

@@ -13,10 +13,6 @@ import com.cts.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Seeds one Admin user on startup if no user with the seed email exists,
- * so the system is never locked out after security is enabled.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor

@@ -25,10 +25,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for IncidentInvestigation (Story 13).
- * Base path: /api/investigations
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/investigations")

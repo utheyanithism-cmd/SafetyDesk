@@ -10,10 +10,6 @@ import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Base class providing automatic createdAt / updatedAt timestamps.
- * Entities that extend this inherit these columns automatically.
- */
 @Getter
 @Setter
 @MappedSuperclass

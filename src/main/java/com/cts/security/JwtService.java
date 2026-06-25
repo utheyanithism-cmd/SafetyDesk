@@ -18,10 +18,7 @@ import io.jsonwebtoken.security.Keys;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Creates and validates HS256 JWTs (Story 10).
- * Claims: subject = email, plus userId, role, siteId. Standard iat/exp.
- */
+
 @Slf4j
 @Service
 public class JwtService {
@@ -34,7 +31,7 @@ public class JwtService {
             @Value("${safetydesk.jwt.secret}") String secret,
             @Value("${safetydesk.jwt.access-expiration-ms}") long accessExpirationMs,
             @Value("${safetydesk.jwt.refresh-expiration-ms}") long refreshExpirationMs) {
-        // HS256 requires a key of at least 256 bits (32 bytes). We derive it from the configured secret.
+      
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.accessExpirationMs = accessExpirationMs;
         this.refreshExpirationMs = refreshExpirationMs;
@@ -108,5 +105,8 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+    public long getAccessExpirationMs() {
+        return this.accessExpirationMs;
     }
 }

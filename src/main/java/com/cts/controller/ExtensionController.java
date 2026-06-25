@@ -25,10 +25,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for PermitExtension (Story 20).
- * Base path: /api/extensions
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/extensions")

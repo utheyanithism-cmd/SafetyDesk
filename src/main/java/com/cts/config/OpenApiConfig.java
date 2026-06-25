@@ -1,5 +1,6 @@
 package com.cts.config;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +11,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
-/**
- * OpenAPI / Swagger configuration for SafetyDesk.
- * Registers a global Bearer-JWT security scheme so the Swagger UI
- * "Authorize" button injects the Authorization header on every request.
- */
 @Configuration
 public class OpenApiConfig {
 
@@ -36,5 +32,26 @@ public class OpenApiConfig {
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")));
+    }
+
+   @Bean
+    public GroupedOpenApi coreModulesApiGroup() {
+        return GroupedOpenApi.builder()
+                .group("Core Modules (Auth, Incidents & Audit)")
+                .pathsToMatch(
+                        "/api/auth/**",
+                        "/api/incidents/**",
+                        "/api/audit/**",
+                        "/api/users/**"
+                )
+                .build();
+    }
+
+  @Bean
+    public GroupedOpenApi allApiGroup() {
+        return GroupedOpenApi.builder()
+                .group("All System Endpoints")
+                .pathsToMatch("/api/**")
+                .build();
     }
 }

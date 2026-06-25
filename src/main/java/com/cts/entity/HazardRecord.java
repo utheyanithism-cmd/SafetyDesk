@@ -23,9 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * HazardRecord (Story 15): an identified workplace hazard in the site hazard register.
- */
 @Entity
 @Table(name = "hazard_record")
 @Getter

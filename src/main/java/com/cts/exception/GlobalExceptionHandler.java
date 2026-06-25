@@ -17,10 +17,6 @@ import com.cts.dto.response.ApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Catches exceptions thrown anywhere and converts them into a consistent
- * ApiResponse JSON body with the correct HTTP status code.
- */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {

@@ -2,7 +2,7 @@ package com.cts.security;
 
 import java.io.IOException;
 
-import org.springframework.lang.NonNull;
+import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Validates the Bearer JWT on each request and, if valid, populates the
- * SecurityContext with the authenticated principal (Story 10/51).
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -37,14 +33,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // no token; continue (may be a public route)
-            return;
+            filterChain.doFilter(request, response);             return;
         }
 
         final String token = authHeader.substring(7);
 
-        // Only ACCESS tokens authenticate requests; REFRESH tokens are for /refresh only
-        if (jwtService.isTokenValid(token) && "ACCESS".equals(jwtService.extractTokenType(token))) {
+              if (jwtService.isTokenValid(token) && "ACCESS".equals(jwtService.extractTokenType(token))) {
             String email = jwtService.extractEmail(token);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);

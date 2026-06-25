@@ -8,9 +8,6 @@ import com.cts.entity.WorkPermit;
 import com.cts.enums.PermitStatus;
 import com.cts.enums.PermitType;
 
-/**
- * Builds dynamic WHERE conditions for work permit queries (Story 19).
- */
 public final class PermitSpecification {
 
     private PermitSpecification() { }

@@ -24,9 +24,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * HealthRecord (Story 21): an occupational health surveillance assessment.
- */
 @Entity
 @Table(name = "health_record")
 @Getter

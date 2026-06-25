@@ -20,10 +20,6 @@ import com.cts.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Story 10 login flow: credential check, status rejection (403),
- * configurable lockout, Login/FailedLogin audit, and token refresh.
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,35 +40,28 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse login(LoginRequest request) {
         log.info("Login attempt for {}", request.getEmail());
 
-        // 1. Find user. Unknown email -> 401 (do not reveal existence).
-        //    No audit userId available, so we log a FailedLogin with a null/0 marker.
-        User user = userRepository.findByEmail(request.getEmail())
+     User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Login failed - unknown email: {}", request.getEmail());
                     return new InvalidCredentialsException("Invalid email or password");
                 });
-
-        // 2. Locked account -> 403
-        if (user.isAccountLocked()) {
+     if (user.isAccountLocked()) {
             auditLogService.record(user.getUserId(), "FailedLogin", ENTITY_TYPE, user.getUserId());
             throw new AccessForbiddenException(
                     "Account is locked due to too many failed login attempts. Contact your administrator.");
         }
-
-        // 3. Inactive / Transferred -> 403 (Story 10)
-        if (user.getStatus() == UserStatus.INACTIVE || user.getStatus() == UserStatus.TRANSFERRED) {
+   if (user.getStatus() == UserStatus.INACTIVE || user.getStatus() == UserStatus.TRANSFERRED) {
             auditLogService.record(user.getUserId(), "FailedLogin", ENTITY_TYPE, user.getUserId());
             throw new AccessForbiddenException(
                     "Account is " + user.getStatus().getLabel() + " and cannot log in.");
         }
 
-        // 4. Password check
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+      if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             handleFailedAttempt(user);
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
-        // 5. Success: reset counter, audit Login, issue tokens
+
         if (user.getFailedLoginAttempts() != 0) {
             user.setFailedLoginAttempts(0);
             userRepository.save(user);
@@ -88,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse refresh(RefreshRequest request) {
         String token = request.getRefreshToken();
 
-        // Must be a valid, non-expired REFRESH token
+  
         if (!jwtService.isTokenValid(token) || !"REFRESH".equals(jwtService.extractTokenType(token))) {
             throw new InvalidCredentialsException("Invalid or expired refresh token");
         }
@@ -97,7 +86,6 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
 
-        // Re-check account state on refresh (user may have been deactivated since)
         if (user.isAccountLocked()
                 || user.getStatus() == UserStatus.INACTIVE
                 || user.getStatus() == UserStatus.TRANSFERRED) {
@@ -108,9 +96,7 @@ public class AuthServiceImpl implements AuthService {
         return buildTokenResponse(user);
     }
 
-    // --- helpers ---
-
-    private void handleFailedAttempt(User user) {
+    	private void handleFailedAttempt(User user) {
         int attempts = user.getFailedLoginAttempts() + 1;
         user.setFailedLoginAttempts(attempts);
 
@@ -120,18 +106,23 @@ public class AuthServiceImpl implements AuthService {
         }
         userRepository.save(user);
 
-        // Story 10: every login attempt (success or failure) is audited
-        auditLogService.record(user.getUserId(), "FailedLogin", ENTITY_TYPE, user.getUserId());
+       auditLogService.record(user.getUserId(), "FailedLogin", ENTITY_TYPE, user.getUserId());
     }
 
-    private LoginResponse buildTokenResponse(User user) {
-        return LoginResponse.builder()
-                .accessToken(jwtService.generateAccessToken(user))
-                .refreshToken(jwtService.generateRefreshToken(user))
-                .tokenType("Bearer")
-                .userId(user.getUserId())
-                .role(user.getRole())
-                .siteId(user.getSiteId())
-                .build();
-    }
+    	private LoginResponse buildTokenResponse(User user) {
+    	    long expirationMs = jwtService.getAccessExpirationMs();
+    	    long expirationMin = expirationMs / (1000 * 60);
+
+    	    String expiresInString = expirationMin + " min";
+
+    	    return LoginResponse.builder()
+    	            .accessToken(jwtService.generateAccessToken(user))
+    	            .refreshToken(jwtService.generateRefreshToken(user))
+    	            .tokenType("Bearer")
+    	            .userId(user.getUserId())
+    	            .role(user.getRole())
+    	            .siteId(user.getSiteId())
+    	            .expiresIn(expiresInString) // <-- Pass the string here instead of the raw long
+    	            .build();
+    	}
 }

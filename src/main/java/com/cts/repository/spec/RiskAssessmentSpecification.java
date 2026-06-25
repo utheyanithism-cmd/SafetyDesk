@@ -7,9 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import com.cts.entity.RiskAssessment;
 import com.cts.enums.RiskAssessmentStatus;
 
-/**
- * Builds dynamic WHERE conditions for risk assessment queries (Story 16).
- */
 public final class RiskAssessmentSpecification {
 
     private RiskAssessmentSpecification() { }

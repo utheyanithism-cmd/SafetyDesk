@@ -27,10 +27,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for MedicalReferral (Story 22).
- * Base path: /api/referrals
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/referrals")

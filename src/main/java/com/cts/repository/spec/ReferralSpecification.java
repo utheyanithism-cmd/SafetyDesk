@@ -7,9 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import com.cts.entity.MedicalReferral;
 import com.cts.enums.ReferralStatus;
 
-/**
- * Builds dynamic WHERE conditions for medical referral queries (Story 22).
- */
 public final class ReferralSpecification {
 
     private ReferralSpecification() { }

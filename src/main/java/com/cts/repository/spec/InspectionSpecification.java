@@ -8,9 +8,6 @@ import com.cts.entity.InspectionSchedule;
 import com.cts.enums.InspectionStatus;
 import com.cts.enums.InspectionType;
 
-/**
- * Builds dynamic WHERE conditions for inspection schedule queries (Story 17).
- */
 public final class InspectionSpecification {
 
     private InspectionSpecification() { }

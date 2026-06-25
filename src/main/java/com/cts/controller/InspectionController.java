@@ -28,10 +28,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST endpoints for InspectionSchedule (Story 17).
- * Base path: /api/inspections
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/inspections")

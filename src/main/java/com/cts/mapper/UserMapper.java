@@ -7,10 +7,6 @@ import com.cts.dto.response.UserResponse;
 import com.cts.entity.User;
 import com.cts.enums.UserStatus;
 
-/**
- * Converts between User entity and its DTOs.
- * Keeps conversion logic out of the service and controller.
- */
 @Component
 public class UserMapper {
 

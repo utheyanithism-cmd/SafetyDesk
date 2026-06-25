@@ -9,9 +9,6 @@ import com.cts.enums.AssessmentType;
 import com.cts.enums.FitnessDecision;
 import com.cts.enums.HealthRecordStatus;
 
-/**
- * Builds dynamic WHERE conditions for health record queries (Story 21).
- */
 public final class HealthRecordSpecification {
 
     private HealthRecordSpecification() { }

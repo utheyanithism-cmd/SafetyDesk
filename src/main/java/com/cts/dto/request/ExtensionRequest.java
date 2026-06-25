@@ -8,9 +8,6 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
-/**
- * Payload to request a permit extension (Story 20).
- */
 @Data
 public class ExtensionRequest {
 
